@@ -34,13 +34,18 @@ export function useHistory<T>(key: string, maxItems: number = 10) {
 
   const addToHistory = (item: T) => {
     setHistory((prev) => {
-      const newHistory = [item, ...prev.filter((_, index) => index < maxItems - 1)];
+      // 确保 prev 是数组
+      const prevArray = Array.isArray(prev) ? prev : [];
+      const newHistory = [item, ...prevArray.filter((_, index) => index < maxItems - 1)];
       return newHistory;
     });
   };
 
   const removeFromHistory = (index: number) => {
-    setHistory((prev) => prev.filter((_, i) => i !== index));
+    setHistory((prev) => {
+      const prevArray = Array.isArray(prev) ? prev : [];
+      return prevArray.filter((_, i) => i !== index);
+    });
   };
 
   const clearHistory = () => {
@@ -48,7 +53,7 @@ export function useHistory<T>(key: string, maxItems: number = 10) {
   };
 
   return {
-    history,
+    history: Array.isArray(history) ? history : [],
     addToHistory,
     removeFromHistory,
     clearHistory,
